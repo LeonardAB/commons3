@@ -30,7 +30,7 @@ static void calculateOccupiedLandRatio(List<Agent> population) {
            // System.out.println("partner.decision = " + occupiedLand);
         }
     occupiedLandRatio = (double) occupiedLand / TOTAL_LAND;
-     System.out.println("--(from the class)------World.occupiedLandRatio = " + occupiedLandRatio);
+     //System.out.println("--(from the class)------World.occupiedLandRatio = " + occupiedLandRatio);
     
 }
 

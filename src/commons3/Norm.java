@@ -22,7 +22,7 @@ public class Norm {
     }
 
     public static List<Integer> compareL2L3(Norm L2, Norm L3) {
-        List<Integer> highestCandidate = new ArrayList<>();;
+        List<Integer> highestCandidate = new ArrayList<>();
         List<NormEstimation> candComb = new ArrayList<>();
         List<Integer> tempCandidate = new ArrayList<>();
         int tempFreq;
@@ -52,6 +52,7 @@ public class Norm {
                     }
                     highestCandidate = SupportTool.mostCommon(tempCandidate, 3);
                     break;
+               
                 case "QUART":
                     tempCandidate.clear();
                     for (NormEstimation tempNorm: candComb) {
@@ -62,7 +63,8 @@ public class Norm {
                     highestCandidate = SupportTool.threeQuart(tempCandidate);
                     break;
                 case "RAND3":
-                    
+                   highestCandidate = SupportTool.randPick(tempCandidate, 3);
+                   
                     break;
                 default:
                     throw new AssertionError();
@@ -80,22 +82,29 @@ public class Norm {
                normEnum.add(normEst.value);
             }
         }
-        
-        
-        
+           
         return majNorms;
     }
     
     public void subjectify(int treshold) {
-        if ("THRES".equals(Agent.DEC_STRAT)) {
+//        if ("THRES".equals(Agent.DEC_STRAT)) {
             for (NormEstimation normEstimation: objEst) {
                 if (normEstimation.freq > treshold) {
                     subEst.add(new NormEstimation(normEstimation.value, normEstimation.freq - treshold));
                 }
             }
-        } else {
-            subEst = objEst;
-        }
+//        } else if ("MAJ4".equals(Agent.DEC_STRAT)){
+//            for (NormEstimation normEstimation: objEst) {
+//                if (normEstimation.freq > 5) {
+//                    subEst.add(new NormEstimation(normEstimation.value, normEstimation.freq - 5));
+//                }
+//            }
+//        }
+        
+//        else {
+//            
+//            subEst = objEst;
+//        }
     }
 
     public static List<NormEstimation> calcObjEst(List<Integer> allPartners) {

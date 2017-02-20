@@ -7,6 +7,7 @@ import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
 import java.util.ArrayList;
 import static java.util.Arrays.sort;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,8 +109,6 @@ class SupportTool {
     int highestFreq;
       Map<T, Integer> map = new HashMap<>();
 
-     
-        
     for (T t : list) {
        
         
@@ -162,7 +161,25 @@ class SupportTool {
       return output;
   }
   
-  
+  public static <T> List<T> randPick (List<T> list, int top){
+        List<T> randomEl = new ArrayList<>();
+      int tcSize = list.size();
+     // System.out.println("tcSize = " + tcSize);
+                    if (!list.isEmpty()) {
+                        Collections.shuffle(list);
+                                          
+                        for (int i = 0; i < top; i++) {
+                   //         System.out.println("i = " + i);
+                             if (tcSize >i) {
+                            randomEl.add(list.get(i));
+                        }
+                        }
+                        
+                    } else {
+                        randomEl = list;
+                    }
+        return randomEl;
+  }
    
   
   

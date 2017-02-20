@@ -14,13 +14,31 @@ import static java.lang.Math.*;
  */
 public class Agent {
 
-    final static double COMMF = 0.75; //communication factor. 1 means no noise, all communication are succesfil
-    final static String LNK_STRAT = "AVG";
-    final static String L2_AGG_STRAT = "AVG";
-    final static String DEC_STRAT = "";
+    static double COMMF = 0.75; //communication factor. 1 means no noise, all communication are succesfil
+    static String LNK_STRAT = "AVG";
+    static String L2_AGG_STRAT = "AVG";
+    static String DEC_STRAT = "MAJ3";
+
+    public static void setLNK_STRAT(String LNK_STRAT) {
+        Agent.LNK_STRAT = LNK_STRAT;
+    }
+
+    public static void setL2_AGG_STRAT(String L2_AGG_STRAT) {
+        Agent.L2_AGG_STRAT = L2_AGG_STRAT;
+    }
+
+    public static void setDEC_STRAT(String DEC_STRAT) {
+        Agent.DEC_STRAT = DEC_STRAT;
+    }
+
+    public static void setCOMMF(double COMMF) {
+        Agent.COMMF = COMMF;
+    }
     
-    Random randSeeder;
-    Random randomizer = new Random();
+    
+    
+ //   Random randSeeder;
+    static Random randomizer = new Random();
     String name, //name of agent
             type; //opportunist, balance, conformer
     int countNormTreshold; // treshold value if number of agents that do this action is above this treshold, it will be a CADIDATE for norm
@@ -70,7 +88,7 @@ public class Agent {
         this.layer2Norm = new Norm();
         this.layer3Norm = new Norm();
         this.maxProfit = 0;
-        this.randSeeder = new Random();
+  //      this.randSeeder = new Random();
     }
 
     public void setNRandomPartners(List<Agent> lst, int n) { //given the popList, choose partners for this agent
@@ -115,7 +133,7 @@ public class Agent {
 
     public void setLayer1() {
         this.layer1 = currentArea + addArea;
-        System.out.println(name + ".Layer1 = " + this.currentArea + "+" + this.addArea + "=" + this.layer1);
+        //System.out.println(name + ".Layer1 = " + this.currentArea + "+" + this.addArea + "=" + this.layer1);
     }
 
     public void setLayer2(double rand) {
@@ -203,7 +221,7 @@ public class Agent {
             //updated due to decreased land size, not because conforming to lower size
             maxProfit = currentProfit;
         }
-        System.out.println("this.name = " + this.name + ", profit= " + currentProfit);
+//        System.out.println("this.name = " + this.name + ", profit= " + currentProfit);
         for (int i = 0; i < lastProfits.length - 1; i++) {
             lastProfits[i] = lastProfits[i + 1]; //e.g. profit[8] moves to profit[7], profit[0] is forgotten
         }

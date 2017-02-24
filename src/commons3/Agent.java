@@ -50,7 +50,8 @@ public class Agent {
             addAreaMax; //opportunist 3, balance 2, conformer 1;
     double maxProfit;
     int layer1, //amount of land agent wanst to occupy (rationaly)
-            layer2; //amount of land agent belief the society wants to occupy
+            layer2, //amount of land agent belief the society wants to occupy
+                layer3;
     Norm layer2Norm, //norm candidate distribution in layer 2
             layer3Norm; //norm candidate distribution in layer 3
     int lastKnownNorm;  // the amount of land that the agent believe is the normal amount to be occupied by the society
@@ -142,6 +143,7 @@ public class Agent {
         for (Agent partner: partners) {
             temp = temp + this.beliefAboutL1(partner, rand); //this is necessary because other people will ask this value for their L3
             allPartnersL1.add(this.beliefAboutL1(partner, rand));
+      //      System.out.println("this.beliefAboutL1(partner, rand) = " + this.beliefAboutL1(partner, rand));
         }
         this.layer2Norm.objEst = Norm.calcObjEst(allPartnersL1);
         this.layer2Norm.subjectify(this.countNormTreshold);
@@ -151,6 +153,7 @@ public class Agent {
                 this.layer2 = round(temp / partners.size()); //average of partners L1
                 break;
             case "MCOM":
+                
                 this.layer2 = SupportTool.mostCommon(allPartnersL1); //most common L1
                 break;
             case "RND":
@@ -164,11 +167,28 @@ public class Agent {
 
    public void setLayer3(double rand) {
         ArrayList<Integer> allPartnersL2 = new ArrayList<>();
+     //  int temp = 0;
         for (Agent partner: partners) {
-            allPartnersL2.add(this.beliefAboutL1(partner, rand)); // this is if you want to use the L3 to be a set of candidate
+      //      temp = temp + this.beliefAboutL2(partner, rand);
+            allPartnersL2.add(this.beliefAboutL2(partner, rand)); // this is if you want to use the L3 to be a set of candidate
         }
         this.layer3Norm.objEst = Norm.calcObjEst(allPartnersL2);
         this.layer3Norm.subjectify(this.countNormTreshold);
+        
+//        switch (L2_AGG_STRAT) {
+//            case "AVG":
+//                this.layer3 = round(temp / partners.size()); //average of partners L1
+//                break;
+//            case "MCOM":
+//                this.layer3 = SupportTool.mostCommon(allPartnersL2); //most common L1
+//                break;
+//            case "RND":
+//                this.layer3 = allPartnersL2.get(randomizer.nextInt(allPartnersL2.size())); //by random pick (wild guess)
+//                break;
+//            default:
+//                throw new AssertionError();
+//        }
+        
     }
 
     public void calculateLastKnownNorm() {
@@ -178,6 +198,7 @@ public class Agent {
             tempVal += partner.currentArea;
             if (!allObserved.contains(partner.currentArea)) {
                 allObserved.add(partner.currentArea);
+     //           System.out.println("partner.currentArea = " + partner.currentArea);
             }
         }
         
@@ -188,7 +209,8 @@ public class Agent {
                 break;
             case "MCOM":
           lastKnownNorm = SupportTool.mostCommon(allObserved); //by using the most common value
-            break;
+            
+          break;
             case "RND":
           lastKnownNorm =  allObserved.get(randomizer.nextInt(allObserved.size())); //by random pick (wild guess)
                 break;
@@ -200,10 +222,15 @@ public class Agent {
 
     public void decide() {
         List<Integer> highestCandidate = Norm.compareL2L3(layer2Norm, layer3Norm);
+//        if (layer1==layer2) {
+//            decision = layer1;
+//            this.normOrSelf = "self";
+//        } else {
+//        
         if (!highestCandidate.isEmpty()) {
             decision = SupportTool.findClosestVal(layer1, highestCandidate); //if there is a candidate that exist both in L2 and L3, choose the closest value to my calc
             if (decision == layer1) {
-                this.normOrSelf = "norm eq. self";
+                this.normOrSelf = "norm=self";
             } else {
                 this.normOrSelf = "norm";
             }
@@ -211,6 +238,10 @@ public class Agent {
             decision = layer1;
             this.normOrSelf = "self";
         }
+        
+//    }
+        
+        
         prevArea = currentArea;  //store the previous area for comparison in calculateProfit()       
         currentArea = decision;
     }

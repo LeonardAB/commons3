@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Commons3 {
 
-    static final int ITERATION = 12;
+    static final int ITERATION = 300;
     static final int POP_SIZE = 200;
     public static final String POPULATION_FILE = "population_auto.csv";
     public static List<Agent> population = new ArrayList<>();
@@ -77,10 +77,6 @@ public class Commons3 {
             String networkFileName = simScan.next();
 //        System.out.print("how many times do you want this simulation to be repeated?");
 //        int simRepeat = Integer.parseInt(simScan.next());
-
-            loadPopulationFromFile(popFileName);
-            loadPartnerFromfile(networkFileName);
-            
             String[] LNK_STRAT_list = {"AVG","MCOM", "RND" , "PERFECT"};
             String[] L2_AGG_STRAT_list = {"AVG","MCOM", "RND"};
             String[] DEC_STRAT_list = {"THRES", "MAJ3", "QUART", "RAND3"};
@@ -88,6 +84,7 @@ public class Commons3 {
             for (String strat1: LNK_STRAT_list) {
                 if (strat1.equals("PERFECT")) {
                     Agent.setCOMMF(1);
+                     Agent.setLNK_STRAT(strat1);
                 } else {
                     Agent.setCOMMF(0.75);
                     Agent.setLNK_STRAT(strat1);
@@ -98,11 +95,17 @@ public class Commons3 {
                         Agent.setDEC_STRAT(strat3);
                         iterCounter++;
                         System.out.println("iteration: "+iterCounter+"--started");
-                        
+                        if (iterCounter>0) {
+
+            World.setOccupiedLandRatio(0);
+            World.setProfitFactor(1);
+            loadPopulationFromFile(popFileName);
+            loadPartnerFromfile(networkFileName);
+            
                         
             File resultFile = SupportTool.notOverwriteFileName("result.csv");
             System.out.print("Path : " + resultFile.getAbsolutePath());
-            File worldState = SupportTool.notOverwriteFileName("world.csv");
+         //   File worldState = SupportTool.notOverwriteFileName("world.csv");
 
             SupportTool.writeToCsv(resultFile, "iteration, "+ITERATION);
             SupportTool.writeToCsv(resultFile, "pop_size, "+POP_SIZE);
@@ -114,7 +117,7 @@ public class Commons3 {
             SupportTool.writeToCsv(resultFile, "COMMF, "+Agent.COMMF);
             SupportTool.writeToCsv(resultFile, "");
             SupportTool.writeToCsv(resultFile, "agent,iteration,layer1,layer2,decision,payoff,dec_base,change");
-            SupportTool.writeToCsv(worldState, "iteration,occupied land ratio,profit factor");
+          //  SupportTool.writeToCsv(worldState, "iteration,occupied land ratio,profit factor");
             int decChg;
             Random randSeeder = new Random();
             double rand;
@@ -122,7 +125,7 @@ public class Commons3 {
             
             
             for (int i = 0; i < ITERATION; i++) {
-                if (i%20==0) {
+                if (i%40==0) {
                     System.out.println("");
                 }
                 System.out.print(".");
@@ -146,7 +149,7 @@ public class Commons3 {
                 World.calculateOccupiedLandRatio(population);
                 World.calculateProfitFactor();
                 //System.out.println("iteration: "+iterCounter+" ----------World.profitFactor = " + World.profitFactor);
-                SupportTool.writeToCsv(worldState, i + "," + World.occupiedLandRatio + "," + World.profitFactor);
+          //      SupportTool.writeToCsv(worldState, i + "," + World.occupiedLandRatio + "," + World.profitFactor);
 
                 for (Agent agent: population) {
                     decChg = abs(agent.decision-agent.prevArea);
@@ -156,7 +159,8 @@ public class Commons3 {
             }
             System.out.println("");
             System.out.println("iteration: "+iterCounter+"-----------DONE");
-                        
+                     population.clear();   
+                    }
             }}} //to close the iteration for different strategies combination
         }
     }
@@ -184,7 +188,7 @@ public class Commons3 {
 
             agentCom = 1;
             initArea = ThreadLocalRandom.current().nextInt(1, 40 + 1); //in the beginning, agents will have various size of land between 1-40
-            countNormTreshold = ThreadLocalRandom.current().nextInt(5, 10 + 1); //this is the most possible value for range of 20
+            countNormTreshold = ThreadLocalRandom.current().nextInt(1, 5 + 1); //this is the most possible value for range of 20
             agentData = SupportTool.threeDigitHex(i) + "," + agentType + "," + agentCom + "," + countNormTreshold + "," + initArea;
             SupportTool.writeToCsv(outFile, agentData);
         }
@@ -219,9 +223,9 @@ public class Commons3 {
             }
 
             //Print the new agent list
-            for (Agent agent: population) {
-                System.out.println(agent.toString());
-            }
+          //  for (Agent agent: population) {
+              //  System.out.println(agent.toString());
+          //  }
         } catch (Exception e) {
             System.out.println("Error in CsvFileReader !!!");
             e.printStackTrace();
@@ -325,7 +329,7 @@ public class Commons3 {
 
             //Print the partner list
             for (Agent agent: population) {
-                System.out.println(agent.toString());
+      //          System.out.println(agent.toString());
             }
         } catch (Exception e) {
             System.out.println("Error in partner CsvFileReader !!!");
